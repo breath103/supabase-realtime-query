@@ -1,6 +1,6 @@
 {
   "name": "supabase-realtime-query",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "React Query integration for Supabase with automatic realtime cache updates",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
