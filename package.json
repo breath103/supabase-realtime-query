@@ -1,0 +1,64 @@
+{
+  "name": "supabase-realtime-query",
+  "version": "0.1.0",
+  "description": "React Query integration for Supabase with automatic realtime cache updates",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "supabase",
+    "react-query",
+    "tanstack-query",
+    "realtime",
+    "cache",
+    "react"
+  ],
+  "author": "Kurt Lee",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/breath103/supabase-realtime-query.git"
+  },
+  "bugs": {
+    "url": "https://github.com/breath103/supabase-realtime-query/issues"
+  },
+  "homepage": "https://github.com/breath103/supabase-realtime-query#readme",
+  "peerDependencies": {
+    "@supabase/postgrest-js": "^1.0.0",
+    "@supabase/supabase-js": "^2.0.0",
+    "@tanstack/react-query": "^5.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "rxjs": "^7.0.0"
+  },
+  "devDependencies": {
+    "@supabase/postgrest-js": "^1.19.4",
+    "@supabase/supabase-js": "^2.49.4",
+    "@tanstack/react-query": "^5.80.7",
+    "@types/lodash": "^4.17.17",
+    "@types/react": "^19.1.8",
+    "react": "^19.1.0",
+    "rxjs": "^7.8.2",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
