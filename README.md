@@ -50,11 +50,14 @@ export function Providers({ children, userId }: { children: React.ReactNode; use
   const config = useMemo(() => ({
     supabase,
     schema: "public" as const,
-    events$: createRealtimeChannel({
-      supabase,
-      channelName: `user:${userId}`,
-      isPrivate: true
-    })
+    // createRealtimeChannel only works in the browser
+    events$: typeof window !== "undefined"
+      ? createRealtimeChannel({
+          supabase,
+          channelName: `user:${userId}`,
+          isPrivate: true
+        })
+      : null
   }), [userId]);
 
   return (

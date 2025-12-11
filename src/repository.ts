@@ -35,7 +35,8 @@ export type RepositoryConfig<
 > = {
   supabase: SupabaseClient<TDatabase>;
   schema: TSchema;
-  events$: Observable<RealtimeEvent<TableNames<TDatabase, TSchema>, any>>;
+  /** Realtime events observable. Pass null to disable realtime updates (e.g., during SSR). */
+  events$: Observable<RealtimeEvent<TableNames<TDatabase, TSchema>, any>> | null;
 };
 
 /**
@@ -48,7 +49,7 @@ export class Repository<
   public readonly queryClient: QueryClient;
   private readonly supabase: SupabaseClient<TDatabase>;
   private readonly schema: TSchema;
-  private readonly subscription: Subscription;
+  private readonly subscription: Subscription | null;
 
   constructor(config: RepositoryConfig<TDatabase, TSchema>) {
     this.supabase = config.supabase;
@@ -67,8 +68,8 @@ export class Repository<
       }
     });
 
-    // Subscribe to realtime events and update cache
-    this.subscription = config.events$.subscribe((payload) => {
+    // Subscribe to realtime events and update cache (skip if events$ is null, e.g., during SSR)
+    this.subscription = config.events$?.subscribe((payload) => {
       const table = payload.table;
 
       if (payload.operation === "INSERT") {
@@ -86,7 +87,7 @@ export class Repository<
           queryKey: recordQueryKey(table, payload.old_record.id)
         });
       }
-    });
+    }) ?? null;
   }
 
   /**
@@ -205,7 +206,7 @@ export class Repository<
    * Clean up subscriptions and cache
    */
   destroy() {
-    this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
     this.queryClient.clear();
   }
 }

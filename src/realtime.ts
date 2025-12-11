@@ -21,6 +21,8 @@ export type RealtimeChannelConfig<TDatabase extends DatabaseSchema> = {
  *
  * The channel expects broadcast events in the format:
  * { operation: 'INSERT' | 'UPDATE' | 'DELETE', table: string, record?: {...}, old_record?: {...} }
+ *
+ * @throws Error if called during server-side rendering
  */
 export function createRealtimeChannel<
   TDatabase extends DatabaseSchema,
@@ -28,6 +30,13 @@ export function createRealtimeChannel<
 >(
   config: RealtimeChannelConfig<TDatabase>
 ): Observable<RealtimeEvent<TableNames<TDatabase, TSchema>, any>> {
+  if (typeof window === "undefined") {
+    throw new Error(
+      "createRealtimeChannel cannot be called during server-side rendering. " +
+      "Realtime subscriptions only work in the browser."
+    );
+  }
+
   const observable = new Observable<RealtimeEvent<TableNames<TDatabase, TSchema>, any>>((subscriber) => {
     const channel = config.supabase
       .channel(config.channelName, {
