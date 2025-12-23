@@ -51,7 +51,7 @@ export class Repository<
   private readonly schema: TSchema;
   private readonly subscription: Subscription | null;
 
-  constructor(config: RepositoryConfig<TDatabase, TSchema>) {
+  public constructor(config: RepositoryConfig<TDatabase, TSchema>) {
     this.supabase = config.supabase;
     this.schema = config.schema;
 

@@ -24,29 +24,12 @@ export function createRepositoryContext<
   }
 
   function RepositoryProvider({
-    config,
+    repository,
     children
   }: {
-    config: RepositoryConfig<TDatabase, TSchema>;
+    repository: Repository<TDatabase, TSchema>,
     children: React.ReactNode;
   }) {
-    const [repository, setRepository] = useState<Repository<TDatabase, TSchema>>(
-      () => new Repository(config)
-    );
-
-    // Recreate repository when config changes (e.g., user changes)
-    useEffect(() => {
-      setRepository((current) => {
-        current.destroy();
-        return new Repository(config);
-      });
-    }, [config]);
-
-    // Cleanup on unmount
-    useEffect(() => {
-      return () => repository.destroy();
-    }, [repository]);
-
     return (
       <QueryClientProvider client={repository.queryClient}>
         <RepositoryContext.Provider value={repository}>
