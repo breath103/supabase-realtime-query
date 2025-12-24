@@ -43,25 +43,33 @@ export const {
 "use client";
 
 import { RepositoryProvider } from "@/lib/repository";
-import { createRealtimeChannel } from "supabase-realtime-query";
+import { Repository, createRealtimeChannel } from "supabase-realtime-query";
 import { supabase } from "@/lib/supabase";
+import { Database } from "@/lib/database.types";
 
 export function Providers({ children, userId }: { children: React.ReactNode; userId: string }) {
-  const config = useMemo(() => ({
-    supabase,
-    schema: "public" as const,
-    // createRealtimeChannel only works in the browser
-    events$: typeof window !== "undefined"
-      ? createRealtimeChannel({
-          supabase,
-          channelName: `user:${userId}`,
-          isPrivate: true
-        })
-      : null
-  }), [userId]);
+  const repository = useMemo(() => {
+    return new Repository<Database, "public">({
+      supabase,
+      schema: "public" as const,
+      // createRealtimeChannel only works in the browser
+      events$: typeof window !== "undefined"
+        ? createRealtimeChannel({
+            supabase,
+            channelName: `user:${userId}`,
+            isPrivate: true
+          })
+        : null
+    });
+  }, [userId]);
+
+  // Cleanup on unmount or when repository changes
+  useEffect(() => {
+    return () => repository.destroy();
+  }, [repository]);
 
   return (
-    <RepositoryProvider config={config}>
+    <RepositoryProvider repository={repository}>
       {children}
     </RepositoryProvider>
   );
